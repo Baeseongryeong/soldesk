@@ -1,0 +1,24 @@
+* 인스턴스 기본 설정
+
+#!/bin/bash
+echo "p@ssw0rd" | passwd --stdin root
+sed -i "s/^#PermitRootLogin yes/PermitRootLogin yes/g" /etc/ssh/sshd_config
+sed -i "s/^PasswordAuthentication no/PasswordAuthentication yes/g" /etc/ssh/sshd_config
+systemctl restart sshd
+===============================================================================================
+* 인스턴스 NAT 설정
+
+#!/bin/bash
+echo "p@ssw0rd" | passwd --stdin root
+sed -i "s/^#PermitRootLogin yes/PermitRootLogin yes/g" /etc/ssh/sshd_config
+sed -i "s/^PasswordAuthentication no/PasswordAuthentication yes/g" /etc/ssh/sshd_config
+systemctl restart sshd
+echo "net.ipv4.ip_forward=1" >> /etc/sysctl.conf
+sysctl -p /etc/sysctl.conf
+yum install -y iptables-services
+systemctl start iptables.service
+systemctl enable iptables.service
+iptables -F
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+service iptables save
+===============================================================================================
